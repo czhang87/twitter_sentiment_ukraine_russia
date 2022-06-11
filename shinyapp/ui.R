@@ -24,20 +24,20 @@ shinyUI(
           tabName = "time_series",
           icon = icon('chart-area')
         ),
-        menuItem(
-          "Emotion",
-          tabName = "emation",
-          icon = icon('table')
-        ),
+        # menuItem(
+        #   "Emotion",
+        #   tabName = "emotion",
+        #   icon = icon('comment-dots')
+        # ),
         menuItem(
           "Topics",
           tabName = "topics",
-          icon = icon('table')
+          icon = icon('comment-dots')
         ),
         menuItem(
           "Word Cloud",
           tabName = "word_cloud",
-          icon = icon('table')
+          icon = icon('cloud')
         ),
         menuItem(
           "About",
@@ -61,9 +61,21 @@ shinyUI(
             inputId = "data_type",
             label = "Select the Data",
             choices = choices_data_type,
-            selected = 'compound_russia_after_war'
+            selected = 'compound_ukraine_after_war'
+          )
+        ),
+        
+        conditionalPanel(
+          condition =  "input.tabs == 'time_series'",
+          selectInput(
+            inputId = "keyword",
+            label = "Select One or Multiple Keywords",
+            choices = choices_keyword,
+            selected = c('ukraine', 'russia'),
+            multiple = T
           )
         )
+        
       )
     ),
     
@@ -82,8 +94,25 @@ shinyUI(
           tabName = "map",
           tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),# increase the height of the map
           leafletOutput("map")
-        )
+        ),
         
+        # Time Series tab
+        tabItem(
+          tabName = 'time_series',
+          plotlyOutput('time_series')
+        ),
+        
+        # # Topic tab
+        tabItem(
+          tabName = 'topic',
+          htmlOutput('topic')
+        ),
+        
+        # Word cloud tab
+        tabItem(
+          tabName = 'word_cloud',
+          imageOutput('word_cloud')
+        )
       )
       
     )

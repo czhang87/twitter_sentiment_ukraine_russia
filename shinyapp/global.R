@@ -29,25 +29,11 @@ library(lubridate)
 
 setwd("~/Documents/Data Science/bootcamp/NSS/DS5/nss_projects/twitter_sentiment_ukraine_russia/shinyapp")
 # # #####################################################################################################
-# # # Geospatial data with demographic info
+# # # load data
 countries_shape <- read_sf("data/World_Countries/World_Countries__Generalized_.shp")
-
-# simplify polygons
-# us_county_covid <- rmapshaper::ms_simplify(us_county_covid, keep = 0.001, keep_shapes = F)
-
-# # write simplified polygons to RDS
-# us_county_covid %>%
-#   write_rds("data/us_county_covid.RDS")
-# #####################################################################################################
-
-## read simplified polygons from RDS to data frame
-# us_county_covid <- read_rds("data/us_county_covid.RDS")
-
-# merge data frame by FIPS
-
-# us_county_covid <- left_join(us_county_covid, covid_vaccination, by = c("FIPS"="fips"))
-df = read_csv('data/sentiment_per_country.csv')
-countries_shape <- left_join(countries_shape, df, by = c('AFF_ISO' = 'iso2_final'))
+sent_per_country = read_csv('data/sentiment_per_country.csv')
+countries_shape <- left_join(countries_shape, sent_per_country, by = c('AFF_ISO' = 'iso2_final'))
+sent_per_date <- read_csv('data/sentiment_per_date.csv')
 
 # labels for legends and titles
 choices_data_type <- c('Sentiment twoards Russia' = "compound_russia_after_war",
@@ -61,6 +47,17 @@ choices_data_type <- c('Sentiment twoards Russia' = "compound_russia_after_war",
                        'Sentiment twoards EU' = "compound_eu_after_war",
                        'Sentiment twoards NATO' = "compound_nato_after_war"
                        )
+choices_keyword <- c('Russia' = 'russia',
+                     'Ukraine' = 'ukraine',
+                     'Vladimir Putin' = 'putin',
+                     'Volodymyr Zelenskyy' = 'zelenskyy',
+                     'Joe Biden' = 'biden',
+                     'Borris Johnson' = 'johnson',
+                     'Emmanuel Macron' = 'macron',
+                     'Olaf Scholz' = 'scholz',
+                     'EU' = 'eu',
+                     'NATO' = 'nato'
+                     )
 
 # Initial view
 initial_lat = 39.8283
