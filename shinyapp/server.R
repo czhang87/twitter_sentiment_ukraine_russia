@@ -73,8 +73,13 @@ shinyServer(function(session, input, output) {
       )
     
     # Time Series tab ###########################################################
-    
+    # req(choices_keyword %in% input$keyword)
+    # req(!is.null(input$keyword))
     output$time_series <- renderPlotly({
+      validate(
+        need(input$keyword, "Select One or Multiple Keywords")
+      )
+      
       ggplotly(
         sent_per_date %>% 
           filter( keyword %in% input$keyword & date > '2022-02-24' ) %>% 
@@ -104,24 +109,29 @@ shinyServer(function(session, input, output) {
     
     ## Topic tab ####
     output$topic <- renderUI({
-      includeHTML("data/html/biden.html")
-      # HTML(readLines(file_to_show))
+      includeHTML(paste0("data/html/", input$topic, ".html"))
     })
 
-    # getPage<-function() {
-    #   return(includeHTML("data/html/biden.html"))
-    # }
-    # output$topic<-renderUI({getPage()})
-
     ## Word cloud
-
-    output$word_cloud <- renderImage({
-      filename <- normalizePath(file.path('./image',
-                                          paste('word_cloud_biden', '.png', sep='')))
-
-      # Return a list containing the filename
-      list(src = filename, alt = "Alternate text")
-    }, deleteFile = FALSE)
+    output$word_cloud_pos <- renderUI({
+      return({
+        div(
+          h3("Positive Word Cloud"),
+          img(src = paste0(input$topic, "_positive.png"))
+        )
+      })
+    })
+    
+    output$word_cloud_neg <- renderUI({
+      return({
+        div(
+          h3("Negative Word Cloud"),
+          img(src = paste0(input$topic, "_negative.png"))
+        )
+      })
+    })
+    
+    
 
 
   })

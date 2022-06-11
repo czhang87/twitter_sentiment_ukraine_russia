@@ -31,7 +31,7 @@ shinyUI(
         # ),
         menuItem(
           "Topics",
-          tabName = "topics",
+          tabName = "topic",
           icon = icon('comment-dots')
         ),
         menuItem(
@@ -74,25 +74,37 @@ shinyUI(
             selected = c('ukraine', 'russia'),
             multiple = T
           )
+        ),
+        
+        conditionalPanel(
+          condition =  "input.tabs == 'topic' | input.tabs == 'word_cloud'",
+          selectInput(
+            inputId = "topic",
+            label = "Select One Keyword",
+            choices = choices_keyword,
+            selected = c('ukraine')
+          )
         )
+        
+        
         
       )
     ),
     
     dashboardBody(
-      
       # shinyDashboardThemes(
       #   theme = "poor_mans_flatly"
       # ),
+      
       add_busy_spinner(spin = "fading-circle"),
       
-      h3('Twitter Sendiment Analysis of Russia and Ukraine in War (April and May, 2022)'),
+      h3('Twitter Sendiment Analysis During Russia-Ukraine War (April and May, 2022)'),
       tabItems(
         
         # Map tab
         tabItem(
           tabName = "map",
-          tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),# increase the height of the map
+          tags$style(type = "text/css", "#map {height: calc(100vh - 120px) !important;}"),# increase the height of the map
           leafletOutput("map")
         ),
         
@@ -105,13 +117,22 @@ shinyUI(
         # # Topic tab
         tabItem(
           tabName = 'topic',
+          tags$style(type = "text/css", "#topic {height: calc(100vh - 10px) !important;}"),
           htmlOutput('topic')
+          
         ),
         
         # Word cloud tab
         tabItem(
           tabName = 'word_cloud',
-          imageOutput('word_cloud')
+            fluidRow(
+              column(3),
+              column(9,
+                     htmlOutput('word_cloud_pos'),
+                     htmlOutput('word_cloud_neg')
+                     )
+              )
+          
         )
       )
       
