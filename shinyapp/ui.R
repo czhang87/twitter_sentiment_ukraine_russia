@@ -1,4 +1,4 @@
-# COVID in the U.S.
+# Twitter Sentiment Analysis During Russia-Ukraine War in 2022
 
 # Define UI for application 
 shinyUI(
@@ -24,11 +24,6 @@ shinyUI(
           tabName = "time_series",
           icon = icon('chart-area')
         ),
-        # menuItem(
-        #   "Emotion",
-        #   tabName = "emotion",
-        #   icon = icon('comment-dots')
-        # ),
         menuItem(
           "Topics",
           tabName = "topic",
@@ -71,7 +66,7 @@ shinyUI(
             inputId = "keyword",
             label = "Select One or Multiple Keywords",
             choices = choices_keyword,
-            selected = c('ukraine', 'russia'),
+            selected = c('Ukraine', 'Russia'),
             multiple = T
           )
         ),
@@ -81,7 +76,7 @@ shinyUI(
           selectInput(
             inputId = "topic",
             label = "Select One Keyword",
-            choices = choices_keyword,
+            choices = choices_topic_word_cloud,
             selected = c('ukraine')
           )
         )
@@ -92,32 +87,32 @@ shinyUI(
     ),
     
     dashboardBody(
-      # shinyDashboardThemes(
-      #   theme = "poor_mans_flatly"
-      # ),
       
+      # busy spinner
       add_busy_spinner(spin = "fading-circle"),
       
-      h3('Twitter Sendiment Analysis During Russia-Ukraine War (April and May, 2022)'),
       tabItems(
         
         # Map tab
         tabItem(
           tabName = "map",
           tags$style(type = "text/css", "#map {height: calc(100vh - 120px) !important;}"),# increase the height of the map
+          uiOutput("map_title"),
           leafletOutput("map")
         ),
         
         # Time Series tab
         tabItem(
           tabName = 'time_series',
+          h3('Twitter Sentiment Analysis During Russia-Ukraine War (April and May, 2022)'),
           plotlyOutput('time_series')
         ),
         
         # # Topic tab
         tabItem(
           tabName = 'topic',
-          tags$style(type = "text/css", "#topic {height: calc(100vh - 10px) !important;}"),
+          # tags$style(type = "text/css", "#topic {height: calc(100vh - 10px) !important;}")
+          uiOutput("topic_title"),
           htmlOutput('topic')
           
         ),
@@ -125,6 +120,7 @@ shinyUI(
         # Word cloud tab
         tabItem(
           tabName = 'word_cloud',
+          uiOutput("word_cloud_title"),
             fluidRow(
               column(3),
               column(9,
@@ -132,8 +128,15 @@ shinyUI(
                      htmlOutput('word_cloud_neg')
                      )
               )
-          
+        ),
+        
+        # About tab
+        tabItem(
+          tabName = "about",
+          h1("About"),
+          includeHTML(rmarkdown::render("data/about.Rmd"))
         )
+        
       )
       
     )

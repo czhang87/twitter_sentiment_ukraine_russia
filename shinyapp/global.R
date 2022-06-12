@@ -1,4 +1,4 @@
-# Twitter Sentiment Analysis of Russia and Ukraine in War
+# Twitter Sentiment Analysis During Russia-Ukraine War in 2022
 
 library(shiny)
 library(shinydashboard)
@@ -35,19 +35,61 @@ sent_per_country = read_csv('data/sentiment_per_country.csv')
 countries_shape <- left_join(countries_shape, sent_per_country, by = c('AFF_ISO' = 'iso2_final'))
 sent_per_date <- read_csv('data/sentiment_per_date.csv')
 
+# capitalize keyword
+list_temp <- c()
+for (x in sent_per_date$keyword){
+  if(x =='putin' ){
+    list_temp = c(list_temp, 'Vladimir Putin')
+  }
+  else if(x =='zelenskyy' ){
+    list_temp = c(list_temp, 'Volodymyr Zelenskyy')
+  }
+  else if(x =='biden' ){
+    list_temp = c(list_temp, 'Joe Biden')
+  }
+  else if(x =='johnson' ){
+    list_temp = c(list_temp, 'Boris Johnson')
+  }
+  else if(x =='macron' ){
+    list_temp = c(list_temp, 'Emmanuel Macron')
+  }
+  else if(x =='scholz' ){
+    list_temp = c(list_temp, 'Olaf Scholz')
+  }
+  else if (x == 'eu' | x == 'nato'){
+    list_temp = c(list_temp, str_to_upper(x))
+  }
+  else {
+    list_temp = c(list_temp, str_to_title(x))
+  }
+}
+sent_per_date <- sent_per_date %>% 
+  mutate(keyword_cap = list_temp)
+
 # labels for legends and titles
-choices_data_type <- c('Sentiment twoards Russia' = "compound_russia_after_war",
-                       'Sentiment twoards Ukraine' = "compound_ukraine_after_war",
-                       'Sentiment twoards Vladimir Putin' = "compound_putin_after_war",
-                       'Sentiment twoards Volodymyr Zelenskyy' = "compound_zelenskyy_after_war", 
-                       'Sentiment twoards Joe Biden' = "compound_biden_after_war",
-                       'Sentiment twoards Borris Johnson' = "compound_johnson_after_war",
-                       'Sentiment twoards Emmanuel Macron' = "compound_macron_after_war", 
-                       'Sentiment twoards Olaf Scholz' = "compound_scholz_after_war",
-                       'Sentiment twoards EU' = "compound_eu_after_war",
-                       'Sentiment twoards NATO' = "compound_nato_after_war"
+choices_data_type <- c('Sentiment towards Russia' = "compound_russia_after_war",
+                       'Sentiment towards Ukraine' = "compound_ukraine_after_war",
+                       'Sentiment towards Vladimir Putin' = "compound_putin_after_war",
+                       'Sentiment towards Volodymyr Zelenskyy' = "compound_zelenskyy_after_war", 
+                       'Sentiment towards Joe Biden' = "compound_biden_after_war",
+                       'Sentiment towards Borris Johnson' = "compound_johnson_after_war",
+                       'Sentiment towards Emmanuel Macron' = "compound_macron_after_war", 
+                       'Sentiment towards Olaf Scholz' = "compound_scholz_after_war",
+                       'Sentiment towards EU' = "compound_eu_after_war",
+                       'Sentiment towards NATO' = "compound_nato_after_war"
                        )
-choices_keyword <- c('Russia' = 'russia',
+choices_keyword <- c('Russia',
+                         'Ukraine',
+                         'Vladimir Putin',
+                         'Volodymyr Zelenskyy',
+                         'Joe Biden',
+                         'Boris Johnson',
+                         'Emmanuel Macron',
+                         'Olaf Scholz',
+                         'EU',
+                         'NATO')
+  
+choices_topic_word_cloud<- c('Russia' = 'russia',
                      'Ukraine' = 'ukraine',
                      'Vladimir Putin' = 'putin',
                      'Volodymyr Zelenskyy' = 'zelenskyy',
