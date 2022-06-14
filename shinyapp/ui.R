@@ -6,7 +6,8 @@ shinyUI(
   dashboardPage(
     
     dashboardHeader(
-      title="Twitter Sentiment Analysis"
+      title="Twitter Sentiment Analysis During Russia-Ukraine War",
+      titleWidth = 480
     ),
     
     dashboardSidebar(
@@ -57,7 +58,12 @@ shinyUI(
             label = "Select the Data",
             choices = choices_data_type,
             selected = 'compound_ukraine_after_war'
-          )
+          ),
+          numericInput(
+            inputId = "tweet_count",
+            label = "Show Countries with Tweets' Number More Than",
+            value = 0,
+            step = 100)
         ),
         
         conditionalPanel(
@@ -125,6 +131,7 @@ shinyUI(
               column(3),
               column(9,
                      htmlOutput('word_cloud_pos'),
+                     br(),
                      htmlOutput('word_cloud_neg')
                      )
               )

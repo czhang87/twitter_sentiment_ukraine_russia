@@ -3,33 +3,20 @@
 library(shiny)
 library(shinydashboard)
 library(tidyverse)
-library(httr)
-library(jsonlite)
 library(sf)
 library(leaflet)
 library(htmltools)
-library(rmapshaper)
 library(stringr)
 library(plotly)
-library(ggExtra)
-library(ggpmisc)
-library(DT)
-library(shinyWidgets)
-library(dashboardthemes)
-library(scales)
-library(shinycssloaders)
-library(ggcorrplot)
-library(repr)
 library(rlang)
-library(xlsx)
 library(shinybusy)
 library(rmarkdown)
-library(dashboardthemes)
-library(lubridate)
+library(shinyWidgets)
+library(scales)
 
-setwd("~/Documents/Data Science/bootcamp/NSS/DS5/nss_projects/twitter_sentiment_ukraine_russia/shinyapp")
-# # #####################################################################################################
-# # # load data
+# setwd("~/Documents/Data Science/bootcamp/NSS/DS5/nss_projects/twitter_sentiment_ukraine_russia/shinyapp")
+
+# load data
 countries_shape <- read_sf("data/World_Countries/World_Countries__Generalized_.shp")
 sent_per_country = read_csv('data/sentiment_per_country.csv')
 countries_shape <- left_join(countries_shape, sent_per_country, by = c('AFF_ISO' = 'iso2_final'))
@@ -67,41 +54,43 @@ sent_per_date <- sent_per_date %>%
   mutate(keyword_cap = list_temp)
 
 # labels for legends and titles
-choices_data_type <- c('Sentiment towards Russia' = "compound_russia_after_war",
-                       'Sentiment towards Ukraine' = "compound_ukraine_after_war",
+choices_data_type <- c('Sentiment towards Ukraine' = "compound_ukraine_after_war",
+                       'Sentiment towards Russia' = "compound_russia_after_war",
+                       'Sentiment towards Volodymyr Zelenskyy' = "compound_zelenskyy_after_war",
                        'Sentiment towards Vladimir Putin' = "compound_putin_after_war",
-                       'Sentiment towards Volodymyr Zelenskyy' = "compound_zelenskyy_after_war", 
                        'Sentiment towards Joe Biden' = "compound_biden_after_war",
                        'Sentiment towards Borris Johnson' = "compound_johnson_after_war",
                        'Sentiment towards Emmanuel Macron' = "compound_macron_after_war", 
                        'Sentiment towards Olaf Scholz' = "compound_scholz_after_war",
-                       'Sentiment towards EU' = "compound_eu_after_war",
+                       'Sentiment towards European Union' = "compound_eu_after_war",
                        'Sentiment towards NATO' = "compound_nato_after_war"
                        )
-choices_keyword <- c('Russia',
-                         'Ukraine',
-                         'Vladimir Putin',
-                         'Volodymyr Zelenskyy',
-                         'Joe Biden',
-                         'Boris Johnson',
-                         'Emmanuel Macron',
-                         'Olaf Scholz',
-                         'EU',
-                         'NATO')
-  
-choices_topic_word_cloud<- c('Russia' = 'russia',
-                     'Ukraine' = 'ukraine',
-                     'Vladimir Putin' = 'putin',
-                     'Volodymyr Zelenskyy' = 'zelenskyy',
-                     'Joe Biden' = 'biden',
-                     'Boris Johnson' = 'johnson',
-                     'Emmanuel Macron' = 'macron',
-                     'Olaf Scholz' = 'scholz',
-                     'EU' = 'eu',
-                     'NATO' = 'nato'
-                     )
 
-# Initial view
+choices_keyword <- c('Ukraine',
+                     'Russia',
+                     'Volodymyr Zelenskyy',
+                     'Vladimir Putin',
+                     'Joe Biden',
+                     'Boris Johnson',
+                     'Emmanuel Macron',
+                     'Olaf Scholz',
+                     'EU',
+                     'NATO')
+  
+choices_topic_word_cloud<- c('Ukraine' = 'ukraine',
+                             'Russia' = 'russia',
+                             'Volodymyr Zelenskyy' = 'zelenskyy',
+                             'Vladimir Putin' = 'putin',
+                             'Joe Biden' = 'biden',
+                             'Boris Johnson' = 'johnson',
+                             'Emmanuel Macron' = 'macron',
+                             'Olaf Scholz' = 'scholz',
+                             'European Union' = 'eu',
+                             'NATO' = 'nato'
+                             )
+
+
+# Map Initial view
 initial_lat = 39.8283
 initial_lng = 0
 initial_zoom = 2

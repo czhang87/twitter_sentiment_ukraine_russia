@@ -7,11 +7,13 @@ shinyServer(function(session, input, output) {
   # Reset Input Button
   observeEvent(input$reset_input, {
 
-    updateSelectInput(session, "data_type", choices = choices_data_type, selected = 'compound_russia_after_war')
-
+    updateSelectInput(session, "data_type", choices = choices_data_type, selected = 'compound_ukraine_after_war')
+    updateNumericInput(session, "tweet_count", value = 0)
+    updateSelectInput(session, "keyword", choices = choices_keyword, selected = c('Ukraine', 'Russia'))
+    updateSelectInput(session, "topic", choices = choices_topic_word_cloud, selected = c('ukraine'))
   })
   
-  # MAP TAB-------------------------------------------------------------------------------
+  # MAP TAB ############################################################################
   
   # Initial Leaflet map
   initial_map <- leaflet() %>%
@@ -32,10 +34,42 @@ shinyServer(function(session, input, output) {
   bins <- c(-1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1)
   mypal <- colorBin("YlGn", bins = bins)
 
-  
+  # Interactive elements
   observe({
+    
     # reactive input data
-    sentiment_scores <- countries_shape %>% pluck(input$data_type)
+    if (input$data_type=="compound_russia_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_russia_after_war_count >= input$tweet_count)
+    }
+    else if (input$data_type=="compound_ukraine_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_ukraine_after_war_count >= input$tweet_count)
+    }
+    else if (input$data_type=="compound_putin_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_putin_after_war_count >= input$tweet_count)
+    }
+    else if (input$data_type=="compound_zelenskyy_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_zelenskyy_after_war_count >= input$tweet_count)
+    }
+    else if (input$data_type=="compound_biden_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_biden_after_war_count >= input$tweet_count)
+    }
+    else if (input$data_type=="compound_johnson_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_johnson_after_war_count >= input$tweet_count)
+    }
+    else if (input$data_type=="compound_macron_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_macron_after_war_count >= input$tweet_count)
+    }
+    else if (input$data_type=="compound_scholz_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_scholz_after_war_count >= input$tweet_count)
+    }
+    else if (input$data_type=="compound_eu_after_war"){
+      countries_shape <- countries_shape %>% filter(compound_eu_after_war_count >= input$tweet_count)
+    }
+    else {
+      countries_shape <- countries_shape %>% filter(compound_nato_after_war_count >= input$tweet_count)
+    }
+    
+    sentiment_scores <- countries_shape %>% pull(!!input$data_type)
     tweet_count <- countries_shape %>% pluck(paste0(input$data_type, '_count'))
     
     # labels
@@ -71,7 +105,7 @@ shinyServer(function(session, input, output) {
       map_title_keyword = 'Olaf Scholz'
     } 
     else if(input$data_type == 'compound_eu_after_war'){
-      map_title_keyword = 'EU'
+      map_title_keyword = 'European Union'
     }
     else{
     map_title_keyword = 'NATO'
@@ -113,16 +147,9 @@ shinyServer(function(session, input, output) {
         opacity = 1
       )
     
-    
-    
     # Time Series tab ###########################################################
-    # req(choices_keyword %in% input$keyword)
-    # req(!is.null(input$keyword))
     output$time_series <- renderPlotly({
-      # validate(
-      #   need(input$keyword, "Select One or Multiple Keywords")
-      # )
-      
+      req(input$keyword) # require a input$keyword to renderPlotly, otherwise the renderPlotly will silently stop.
       ggplotly(
         sent_per_date %>% 
           filter( keyword_cap %in% input$keyword & date > '2022-02-24' ) %>% 
@@ -141,8 +168,7 @@ shinyServer(function(session, input, output) {
                 legend.text = black.bold.plain.11.text,
                 strip.text = white.bold.plain.14.text,
                 strip.background = element_rect(fill = "#2596be"))+
-          labs(title = 'Twitter Sentiment',
-               x='Date in 2022',
+          labs(x='Date in 2022',
                y='Sentiment Score',
                color = 'Keyword'
           )+
@@ -178,7 +204,7 @@ shinyServer(function(session, input, output) {
       topic_word_cloud_title_keyword = 'Olaf Scholz'
     } 
     else if(input$topic == 'eu'){
-      topic_word_cloud_title_keyword = 'EU'
+      topic_word_cloud_title_keyword = 'European Union'
     }
     else{
       topic_word_cloud_title_keyword = 'NATO'
