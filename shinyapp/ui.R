@@ -102,8 +102,9 @@ shinyUI(
         # Map tab
         tabItem(
           tabName = "map",
-          tags$style(type = "text/css", "#map {height: calc(100vh - 120px) !important;}"),# increase the height of the map
+          tags$style(type = "text/css", "#map {height: calc(100vh - 135px) !important;}"),# increase the height of the map
           uiOutput("map_title"),
+          uiOutput('sent_score_note'),
           leafletOutput("map")
         ),
         

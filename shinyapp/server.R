@@ -32,7 +32,7 @@ shinyServer(function(session, input, output) {
   
   # palette
   bins <- c(-1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1)
-  mypal <- colorBin("YlGn", bins = bins)
+  mypal <- colorBin("RdYlGn", bins = bins)
 
   # Interactive elements
   observe({
@@ -115,9 +115,14 @@ shinyServer(function(session, input, output) {
       h3(HTML(
         'Twitter Sentiment Towards ', 
         "<strong>", paste0(map_title_keyword),"</strong>",
-        'During Russia-Ukraine War (April and May 2022)'
-        
-      )) 
+        'During Russia-Ukraine War 2022'
+      ))
+    )
+    
+    output$sent_score_note <- renderPrint(
+      h4(
+        'Note: sentiment score of 1 is the most positive and that of -1 is most negative.'
+      )
     )
     
     #leafletProxy map
