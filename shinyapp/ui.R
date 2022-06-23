@@ -59,6 +59,7 @@ shinyUI(
             choices = choices_data_type,
             selected = 'compound_ukraine_after_war'
           ),
+          
           numericInput(
             inputId = "tweet_count",
             label = "Show Countries with Tweets' Number More Than",
@@ -86,9 +87,6 @@ shinyUI(
             selected = c('ukraine')
           )
         )
-        
-        
-        
       )
     ),
     
@@ -115,7 +113,7 @@ shinyUI(
           plotlyOutput('time_series')
         ),
         
-        # # Topic tab
+        # Topic tab
         tabItem(
           tabName = 'topic',
           # tags$style(type = "text/css", "#topic {height: calc(100vh - 10px) !important;}")
@@ -144,9 +142,7 @@ shinyUI(
           h1("About"),
           includeHTML(rmarkdown::render("data/about.Rmd"))
         )
-        
       )
-      
     )
   )
 )

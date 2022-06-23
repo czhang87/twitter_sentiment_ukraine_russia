@@ -72,7 +72,8 @@ shinyServer(function(session, input, output) {
     sentiment_scores <- countries_shape %>% pull(!!input$data_type)
     tweet_count <- countries_shape %>% pluck(paste0(input$data_type, '_count'))
     
-    # labels
+    # Map tab ###########################################################
+    # labels for map popup 
     labels_map <- paste(
       "<strong>",countries_shape$COUNTRYAFF, "</strong><br/>",
       "Sentiment Score: ", round(sentiment_scores, digits=3),"<br/>",
@@ -259,10 +260,5 @@ shinyServer(function(session, input, output) {
         )
       })
     })
-    
-    
-
-
   })
-  
 })
